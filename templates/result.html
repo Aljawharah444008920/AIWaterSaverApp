@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <title>نتائج تحليل استهلاك الماء</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #bbf7d0 0, #ecfdf5 45%, #f9fafb 100%);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+        .page-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .card-main {
+            max-width: 720px;
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(22, 101, 52, 0.25);
+            border: none;
+            overflow: hidden;
+        }
+        .card-header-custom {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: #fff;
+            padding: 22px 26px;
+        }
+        .badge-tag {
+            background-color: rgba(255,255,255,0.16);
+            border-radius: 999px;
+            padding: 3px 10px;
+            font-size: 0.75rem;
+        }
+        .chip {
+            border-radius: 999px;
+            padding: 2px 10px 4px;
+            font-size: 0.75rem;
+            background: rgba(15, 23, 42, 0.08);
+        }
+        .card-body-custom {
+            padding: 22px 26px 20px;
+            background-color: #ffffff;
+        }
+        .metric-card {
+            border-radius: 16px;
+            padding: 16px 14px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+        }
+        .metric-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        .metric-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #111827;
+        }
+        .metric-unit {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        .progress-container {
+            background: #f3f4f6;
+            border-radius: 999px;
+            overflow: hidden;
+            height: 10px;
+        }
+        .progress-bar-custom {
+            height: 10px;
+            background: linear-gradient(90deg, #22c55e, #0ea5e9);
+        }
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #0ea5e9, #22c55e);
+            border: none;
+            border-radius: 999px;
+            padding-inline: 24px;
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.35);
+        }
+        .btn-secondary-custom {
+            border-radius: 999px;
+        }
+        .tip-box {
+            border-radius: 14px;
+            background: #ecfdf5;
+            border: 1px dashed #22c55e;
+            padding: 12px 14px;
+            font-size: 0.85rem;
+            color: #166534;
+        }
+    </style>
+</head>
+<body>
+<div class="page-wrapper">
+    <div class="card card-main">
+        <div class="card-header card-header-custom d-flex justify-content-between align-items-center">
+            <div>
+                <div class="badge-tag mb-2">
+                    تقريرك الشخصي عن غسل اليدين 💧
+                </div>
+                <h5 class="mb-1">نتائج تحليل استهلاك الماء</h5>
+                <p class="mb-0" style="font-size: 0.9rem; opacity: .9;">
+                    الأرقام تقريبية لكنها تعطيك تصور واضح عن الهدر وفرص الترشيد.
+                </p>
+            </div>
+            <div class="chip">
+                {{ result.save_ratio }}٪ إمكانية ترشيد
+            </div>
+        </div>
+
+        <div class="card-body card-body-custom">
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <div class="metric-card h-100">
+                        <div class="metric-label mb-1">مدة فتح الماء الكلية</div>
+                        <div class="metric-value">
+                            {{ result.total_time }}
+                            <span class="metric-unit">ثانية</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="metric-card h-100">
+                        <div class="metric-label mb-1">مدة الاستخدام الفعلي</div>
+                        <div class="metric-value text-primary">
+                            {{ result.use_time }}
+                            <span class="metric-unit">ثانية</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="metric-card h-100">
+                        <div class="metric-label mb-1">مدة الهدر</div>
+                        <div class="metric-value text-danger">
+                            {{ result.waste_time }}
+                            <span class="metric-unit">ثانية</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <div class="metric-card h-100">
+                        <div class="metric-label mb-1">الكمية التقريبية للماء المستخدم</div>
+                        <div class="metric-value">
+                            {{ result.water_used_liters }}
+                            <span class="metric-unit">لتر</span>
+                        </div>
+                        <div class="metric-label mt-2">الماء المهدور</div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fw-semibold text-danger">
+                                {{ result.water_wasted_liters }} لتر
+                            </span>
+                            <div class="flex-grow-1 progress-container">
+                                <div class="progress-bar-custom" style="width: {{ result.save_ratio }}%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 d-flex flex-column gap-2">
+                    <div class="tip-box">
+                        <strong>نصيحة سلوك بسيطة:</strong>
+                        أغلقي الصنبور أثناء فرك الصابون وافتحيه فقط عند الشطف، في كل غسلة تقدرين توفّرين جزء كبير من
+                        {{ result.water_wasted_liters }} لتر الهدر.
+                    </div>
+                    <div class="tip-box" style="background:#eff6ff;border-color:#0ea5e9;color:#1d4ed8;">
+                        <strong>فكرة للمشروع:</strong>
+                        يمكنك استخدام هذه النتائج لعمل مقارنة بين عدة فيديوهات لنفس الشخص، وعرض تحسّن سلوك الترشيد مع الوقت.
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-2">
+                <div class="d-flex gap-2">
+                    <a href="/" class="btn btn-primary-custom">
+                        تحليل فيديو جديد
+                    </a>
+                    <button type="button" class="btn btn-outline-secondary btn-secondary-custom" onclick="history.back()">
+                        رجوع
+                    </button>
+                </div>
+                <div class="text-muted" style="font-size: 0.8rem;">
+                    هذه الأرقام تقريبية وتعتمد على افتراض معدل تدفق ثابت للصنبور.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
