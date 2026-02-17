@@ -2,149 +2,335 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="utf-8">
-    <title>تحليل استهلاك الماء في غسل اليدين</title>
-    <!-- Bootstrap 5 + RTL -->
+    <title>AI Water Saver - تحليل استهلاك الماء</title>
+
+    <!-- Bootstrap 5 RTL -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
     <style>
+        :root {
+            --primary: #0ea5e9;
+            --secondary: #22c55e;
+            --dark: #0f172a;
+            --light-bg: #f1f5f9;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             min-height: 100vh;
-            background: radial-gradient(circle at top, #c4f1ff 0, #e9f7ff 40%, #f7fbff 100%);
+            margin: 0;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background:
+                    radial-gradient(circle at top left, #dbeafe 0, transparent 50%),
+                    radial-gradient(circle at top right, #bbf7d0 0, transparent 55%),
+                    radial-gradient(circle at bottom, #e0f2fe 0, #f8fafc 60%);
+            color: var(--dark);
+            overflow-x: hidden;
         }
-        .page-wrapper {
-            min-height: 100vh;
-            display: flex;
+
+        /* هيدر بسيط */
+        .main-navbar {
+            backdrop-filter: blur(14px);
+            background-color: rgba(15, 23, 42, 0.70);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, rgba(56,189,248,0.18), rgba(34,197,94,0.20));
+            color: #e5f3ff;
+            font-size: 0.8rem;
+        }
+
+        .brand-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 999px;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            background: radial-gradient(circle at 30% 30%, #e0f2fe, #0ea5e9);
+            box-shadow: 0 0 0 4px rgba(15,23,42,0.55);
+            font-size: 1rem;
         }
-        .card-main {
-            max-width: 650px;
-            width: 100%;
-            box-shadow: 0 20px 40px rgba(15, 115, 142, 0.25);
-            border: none;
-            border-radius: 20px;
+
+        /* منطقة الهيرو */
+        .hero-section {
+            padding-top: 90px;
+            padding-bottom: 60px;
+        }
+
+        .hero-title {
+            font-weight: 800;
+            font-size: clamp(1.9rem, 2.4vw + 1.4rem, 2.6rem);
+            letter-spacing: -0.04em;
+        }
+
+        .hero-highlight {
+            background: linear-gradient(120deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 0.96rem;
+            color: #64748b;
+        }
+
+        .pulse-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            background: #22c55e;
+            box-shadow: 0 0 0 0 rgba(34,197,94,0.7);
+            animation: pulse 1.6s infinite;
+        }
+
+        @keyframes pulse {
+            0%   { box-shadow: 0 0 0 0 rgba(34,197,94,0.7); }
+            70%  { box-shadow: 0 0 0 10px rgba(34,197,94,0); }
+            100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+        }
+
+        /* كرت الرفع */
+        .upload-card {
+            position: relative;
+            border-radius: 22px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            background: rgba(15, 23, 42, 0.88);
+            color: #e5e7eb;
+            box-shadow:
+                    0 28px 60px rgba(15, 23, 42, 0.65),
+                    0 0 0 1px rgba(148, 163, 184, 0.25);
             overflow: hidden;
         }
-        .card-header-custom {
-            background: linear-gradient(135deg, #0ea5e9, #22c55e);
-            color: #fff;
-            padding: 22px 26px;
+
+        .upload-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                    radial-gradient(circle at top left, rgba(56,189,248,0.20), transparent 55%),
+                    radial-gradient(circle at bottom right, rgba(34,197,94,0.18), transparent 55%);
+            opacity: 0.85;
+            pointer-events: none;
         }
-        .badge-tag {
-            background-color: rgba(255,255,255,0.15);
+
+        .upload-inner {
+            position: relative;
+            z-index: 1;
+            padding: 22px 20px 20px;
+        }
+
+        .chip-small {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 2px 8px 3px;
             border-radius: 999px;
-            padding: 3px 10px;
+            background-color: rgba(15,23,42,0.8);
+            border: 1px solid rgba(148,163,184,0.5);
             font-size: 0.75rem;
+            color: #cbd5f5;
         }
-        .wave-circle {
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #e0faff, #0ea5e9);
-            display: flex;
+
+        .upload-area {
+            border-radius: 18px;
+            border: 1px dashed rgba(148,163,184,0.8);
+            background: radial-gradient(circle at top, rgba(15,23,42,0.9), rgba(15,23,42,0.97));
+            padding: 22px 18px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.25s all ease;
+        }
+
+        .upload-area:hover {
+            border-style: solid;
+            border-color: rgba(56,189,248,0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(15,23,42,0.85);
+        }
+
+        .upload-icon {
+            display: inline-flex;
+            width: 54px;
+            height: 54px;
+            border-radius: 999px;
             align-items: center;
             justify-content: center;
-            color: #0f172a;
-            font-weight: 700;
-            box-shadow: 0 0 0 6px rgba(255,255,255,0.12);
+            background: radial-gradient(circle at 30% 30%, #f1f5f9, #0ea5e9);
+            box-shadow:
+                    0 12px 30px rgba(15, 23, 42, 0.65),
+                    0 0 0 4px rgba(15, 23, 42, 0.9);
+            margin-bottom: 8px;
+            font-size: 1.6rem;
         }
-        .card-body-custom {
-            padding: 24px 26px 22px;
-            background-color: #ffffff;
-        }
-        .helper-text {
-            font-size: 0.85rem;
-            color: #6b7280;
-        }
-        .upload-area {
-            border: 2px dashed #38bdf8;
-            border-radius: 16px;
-            padding: 26px 20px;
-            text-align: center;
-            background: #f0f9ff;
-            transition: 0.2s all ease;
-        }
-        .upload-area:hover {
-            background: #e0f2fe;
-            border-color: #0ea5e9;
-        }
-        .upload-icon {
-            font-size: 2.2rem;
-            color: #0ea5e9;
-        }
-        .btn-primary-custom {
-            background: linear-gradient(135deg, #0ea5e9, #22c55e);
-            border: none;
-            border-radius: 999px;
-            padding-inline: 26px;
-            box-shadow: 0 10px 20px rgba(14, 165, 233, 0.35);
-        }
-        .btn-primary-custom:hover {
-            opacity: 0.92;
-        }
-        .footer-mini {
-            font-size: 0.8rem;
+
+        .upload-helper {
+            font-size: 0.82rem;
             color: #9ca3af;
+        }
+
+        .btn-main {
+            position: relative;
+            border-radius: 999px;
+            border: none;
+            padding: 10px 22px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #0b1120;
+            box-shadow:
+                    0 14px 30px rgba(56,189,248,0.38),
+                    0 0 0 1px rgba(15,23,42,0.4);
+            transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.02);
+            box-shadow:
+                    0 18px 38px rgba(34,197,94,0.40),
+                    0 0 0 1px rgba(15,23,42,0.6);
+        }
+
+        .mini-badges span {
+            font-size: 0.75rem;
+            border-radius: 999px;
+            padding: 3px 8px;
+            color: #6b7280;
+            background-color: rgba(15,23,42,0.02);
+            border: 1px dashed rgba(148,163,184,0.35);
+        }
+
+        /* أنيميشن دخول */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(14px);
+            animation: fadeUp 0.7s ease forwards;
+        }
+
+        .fade-up.delay-1 { animation-delay: 0.10s; }
+        .fade-up.delay-2 { animation-delay: 0.20s; }
+        .fade-up.delay-3 { animation-delay: 0.32s; }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding-top: 80px;
+                padding-bottom: 40px;
+            }
         }
     </style>
 </head>
 <body>
-<div class="page-wrapper">
-    <div class="card card-main">
-        <div class="card-header card-header-custom d-flex justify-content-between align-items-center">
+
+<!-- شريط علوي بسيط -->
+<nav class="navbar navbar-dark main-navbar fixed-top">
+    <div class="container-fluid px-3 px-md-4">
+        <div class="d-flex align-items-center gap-2">
+            <div class="brand-icon">💧</div>
             <div>
-                <div class="badge-tag mb-2">
-                    مشروع ترشيد استهلاك المياه 👋
+                <div class="brand-badge mb-1">
+                    <span class="pulse-dot"></span>
+                    <span>AI Water Saver</span>
                 </div>
-                <h5 class="mb-1">تحليل استهلاك الماء أثناء غسل اليدين</h5>
-                <p class="mb-0" style="font-size: 0.9rem; opacity: .9;">
-                    ارفعي فيديو قصير لعملية غسل اليدين، والنظام يعطيك تقرير ذكي عن الهدر والاستهلاك.
-                </p>
-            </div>
-            <div class="wave-circle">
-                💧
+                <small class="text-light">لوحة ذكية لتحليل سلوك غسل اليدين وترشيد استهلاك الماء</small>
             </div>
         </div>
+        <div class="d-none d-sm-flex align-items-center gap-2 text-light">
+            <span style="font-size:0.8rem; color:#9ca3af;">نموذج أولي لمشروع تخرج</span>
+        </div>
+    </div>
+</nav>
 
-        <div class="card-body card-body-custom">
-            {% if error %}
-                <div class="alert alert-danger mb-3">
-                    {{ error }}
+<section class="hero-section">
+    <div class="container">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-6 fade-up delay-1">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <div class="pulse-dot"></div>
+                    <span style="font-size:0.8rem; color:#64748b;">ارفع فيديو واحد، وشوف كم تستهلك ماء فعليًا</span>
                 </div>
-            {% endif %}
+                <h1 class="hero-title mb-2">
+                    منصة <span class="hero-highlight">ذكـية</span> لتحليل
+                    <br>استهلاك الماء في غسل اليدين.
+                </h1>
+                <p class="hero-subtitle mb-3">
+                    ارفع فيديو قصير لغسل اليدين، والمنصة تحلل زمن فتح الصنبور، زمن الاستخدام الفعلي،
+                    ومدة الهدر، ثم تقدّر كمية المياه المستهلكة ونسبة الترشيد الممكنة.
+                </p>
+                <div class="mini-badges d-flex flex-wrap gap-2">
+                    <span>بدون حساسات أو أجهزة إضافية</span>
+                    <span>معتمد على رؤية الحاسوب والذكاء الاصطناعي</span>
+                    <span>مناسب للمدارس وحملات التوعية</span>
+                </div>
+            </div>
 
-            <form method="post" enctype="multipart/form-data" class="mt-1">
-                <div class="upload-area mb-3">
-                    <div class="upload-icon mb-2">⬆️</div>
-                    <h6 class="mb-1">اختاري فيديو لغسل اليدين</h6>
-                    <p class="helper-text mb-2">
-                        يفضّل أن يكون الفيديو من 5 إلى 30 ثانية، وبصيغة mp4 أو mov أو avi أو mkv.
-                    </p>
-                    <div class="d-flex justify-content-center">
-                        <label class="btn btn-outline-info btn-sm mb-0">
-                            اختيار ملف
-                            <input type="file" name="file" accept="video/*" required hidden>
-                        </label>
+            <div class="col-lg-6 fade-up delay-2">
+                <div class="upload-card mt-3 mt-lg-0">
+                    <div class="upload-inner">
+
+                        {% if error %}
+                            <div class="alert alert-danger py-2 px-3 mb-3">
+                                {{ error }}
+                            </div>
+                        {% endif %}
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <div class="chip-small mb-1">
+                                    <span>الخطوة 1</span>
+                                    <span style="opacity:.7">رفع فيديو غسل اليدين</span>
+                                </div>
+                                <h6 class="mb-0 mt-1">حمّل فيديو من كاميرا الجوال أو اللابتوب</h6>
+                            </div>
+                            <div style="text-align:left; font-size:0.75rem; color:#9ca3af;">
+                                <div>الطول المثالي: 5–30 ثانية</div>
+                                <div>الأنواع المدعومة: mp4 / mov / avi / mkv</div>
+                            </div>
+                        </div>
+
+                        <form method="post" enctype="multipart/form-data">
+                            <label class="upload-area mb-3">
+                                <div class="upload-icon">⬆️</div>
+                                <h6 class="mb-1">اسحب وأسقط الملف هنا أو اضغط للاختيار</h6>
+                                <p class="upload-helper mb-2">
+                                    تأكد أن حوض الغسيل والصنبور واليدين يظهرون بوضوح في الفيديو.
+                                </p>
+                                <input type="file" name="file" accept="video/*" required hidden>
+                            </label>
+
+                            <button type="submit" class="btn btn-main w-100">
+                                تحـليل استهلاك الماء الآن
+                            </button>
+                        </form>
+
+                        <div class="d-flex justify-content-between align-items-center mt-3" style="font-size:0.78rem;">
+                            <span style="color:#9ca3af;">لا يتم تخزين الفيديو في الخادم في هذه النسخة التجريبية.</span>
+                            <span style="color:#e5e7eb; opacity:.9;">نسخة تجريبية • Prototype</span>
+                        </div>
                     </div>
                 </div>
-
-                <button type="submit" class="btn btn-primary-custom w-100">
-                    تحليل استهلاك الماء الآن
-                </button>
-            </form>
-
-            <div class="d-flex justify-content-between align-items-center mt-3">
-                <div class="helper-text">
-                    لا يتم حفظ ملف الفيديو، يُستخدم فقط لعملية التحليل على جهاز التطوير.
-                </div>
-                <span class="badge bg-light text-muted border">
-                    نسخة أولية (Prototype)
-                </span>
             </div>
         </div>
     </div>
-</div>
+</section>
+
 </body>
 </html>
