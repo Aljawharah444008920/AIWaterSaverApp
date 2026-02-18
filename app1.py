@@ -6,11 +6,9 @@ from werkzeug.utils import secure_filename
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'mp4', 'mov', 'avi', 'mkv'}
 
-# نحدد مجلد القوالب templates صراحة
 app = Flask(__name__, template_folder='templates')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# نتأكد أن مجلد الرفع موجود
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
@@ -33,21 +31,68 @@ def analyze_video(video_path):
         }
 
     fps = cap.get(cv2.CAP_PROP_FPS)
-    frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+    frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     total_seconds = frame_count / fps if fps > 0 else 0
 
-    # توزيع افتراضي: 70٪ استخدام فعلي، 30٪ هدر
-    use_time = total_seconds * 0.7
-    waste_time = total_seconds * 0.3
+    use_frames = 0
+    waste_frames = 0
 
-    # معدل تدفق تقريبي: 0.1 لتر لكل ثانية
-    flow_rate_lps = 0.1
+    ret, prev_frame = cap.read()
+    if not ret:
+        cap.release()
+        return {}
+
+    height, width, _ = prev_frame.shape
+
+    # تحديد منطقة التحليل (منتصف الفيديو غالباً مكان الصنبور)
+    roi_x1 = int(width * 0.3)
+    roi_x2 = int(width * 0.7)
+    roi_y1 = int(height * 0.3)
+    roi_y2 = int(height * 0.8)
+
+    prev_roi = prev_frame[roi_y1:roi_y2, roi_x1:roi_x2]
+    prev_gray = cv2.cvtColor(prev_roi, cv2.COLOR_BGR2GRAY)
+    prev_gray = cv2.GaussianBlur(prev_gray, (15, 15), 0)
+
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        roi = frame[roi_y1:roi_y2, roi_x1:roi_x2]
+        gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+        gray = cv2.GaussianBlur(gray, (15, 15), 0)
+
+        # الفرق بين الفريم السابق والحالي
+        frame_diff = cv2.absdiff(prev_gray, gray)
+
+        # تحويل إلى صورة ثنائية
+        thresh = cv2.threshold(frame_diff, 30, 255, cv2.THRESH_BINARY)[1]
+
+        motion_pixels = cv2.countNonZero(thresh)
+
+        # حساب نسبة الحركة داخل المنطقة
+        total_pixels = thresh.shape[0] * thresh.shape[1]
+        motion_ratio = motion_pixels / total_pixels
+
+        # إذا تحرك أكثر من 2% من المنطقة = استخدام
+        if motion_ratio > 0.02:
+            use_frames += 1
+        else:
+            waste_frames += 1
+
+        prev_gray = gray
+
+    cap.release()
+
+    use_time = use_frames / fps if fps > 0 else 0
+    waste_time = waste_frames / fps if fps > 0 else 0
+
+    flow_rate_lps = 0.1  # 0.1 لتر لكل ثانية
     water_used_liters = total_seconds * flow_rate_lps
     water_wasted_liters = waste_time * flow_rate_lps
 
     save_ratio = (water_wasted_liters / water_used_liters * 100) if water_used_liters > 0 else 0
-
-    cap.release()
 
     return {
         "total_time": round(total_seconds, 2),
@@ -82,13 +127,11 @@ def upload_file():
             return render_template('result.html', result=result, filename=filename)
 
         else:
-            error = "نوع الملف غير مدعوم، حمّلي فيديو بصيغة mp4 أو mov أو avi أو mkv."
+            error = "نوع الملف غير مدعوم."
             return render_template('upload.html', error=error)
 
-    # طلب GET عادي: يعرض صفحة رفع الفيديو
     return render_template('upload.html')
 
 
 if __name__ == '__main__':
     app.run(debug=True)
-
