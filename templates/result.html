@@ -1,310 +1,146 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="utf-8">
-    <title>AI Water Saver - نتائج التحليل</title>
+<meta charset="utf-8">
+<title>نتائج التحليل</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
 
-    <style>
-        :root {
-            --primary: #0ea5e9;
-            --secondary: #22c55e;
-            --dark: #020617;
-        }
+<style>
+body{
+    min-height:100vh;
+    margin:0;
+    font-family: system-ui;
+    background: linear-gradient(135deg,#e0f2fe,#bbf7d0);
+}
 
-        body {
-            min-height: 100vh;
-            margin: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background:
-                    radial-gradient(circle at top left, #bbf7d0 0, transparent 55%),
-                    radial-gradient(circle at top right, #dbeafe 0, transparent 55%),
-                    radial-gradient(circle at bottom, #f1f5f9 0, #f9fafb 55%);
-            color: #0f172a;
-        }
+.wrapper{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 20px;
+}
 
-        .page-wrap {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 80px 16px 32px;
-        }
+.card-main{
+    width:100%;
+    max-width:1000px;
+    background:white;
+    border-radius:20px;
+    box-shadow:0 25px 60px rgba(0,0,0,0.08);
+    padding:40px;
+}
 
-        .card-main {
-            max-width: 850px;
-            width: 100%;
-            border-radius: 24px;
-            border: 1px solid rgba(148,163,184,0.4);
-            background: rgba(255,255,255,0.96);
-            box-shadow:
-                    0 28px 60px rgba(15,23,42,0.18),
-                    0 0 0 1px rgba(148,163,184,0.25);
-            overflow: hidden;
-        }
+.title{
+    font-weight:800;
+    font-size:26px;
+}
 
-        .header-top {
-            background: radial-gradient(circle at top left, rgba(56,189,248,0.25), rgba(34,197,94,0.45));
-            color: #f9fafb;
-            padding: 18px 22px;
-        }
+.metric{
+    background:#f8fafc;
+    border-radius:16px;
+    padding:20px;
+    text-align:center;
+    box-shadow:0 10px 25px rgba(0,0,0,0.05);
+}
 
-        .chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.33rem;
-            padding: 3px 10px;
-            border-radius: 999px;
-            background: rgba(15,23,42,0.28);
-            font-size: 0.8rem;
-        }
+.metric h3{
+    font-weight:800;
+    margin:0;
+}
 
-        .chip span.small {
-            font-size: 0.72rem;
-            opacity: .85;
-        }
+.metric span{
+    color:#64748b;
+    font-size:13px;
+}
 
-        .metrics-wrap {
-            padding: 18px 20px 18px;
-        }
+.progress{
+    height:12px;
+    border-radius:999px;
+}
 
-        .metric-box {
-            border-radius: 18px;
-            padding: 14px 14px;
-            background: #f9fafb;
-            border: 1px solid rgba(226,232,240,0.95);
-            box-shadow: 0 12px 30px rgba(15,23,42,0.04);
-            position: relative;
-            overflow: hidden;
-        }
+.btn-main{
+    border-radius:999px;
+    padding:10px 25px;
+    border:none;
+    font-weight:600;
+    background:linear-gradient(135deg,#0ea5e9,#22c55e);
+    color:white;
+}
 
-        .metric-label {
-            font-size: 0.8rem;
-            color: #6b7280;
-        }
-
-        .metric-value {
-            font-size: 1.5rem;
-            font-weight: 800;
-            letter-spacing: -0.03em;
-        }
-
-        .metric-unit {
-            font-size: 0.8rem;
-            color: #9ca3af;
-            margin-right: 4px;
-        }
-
-        .metric-box::after {
-            content: "";
-            position: absolute;
-            inset-inline-end: -18px;
-            inset-block-end: -18px;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: radial-gradient(circle at center, rgba(56,189,248,0.2), transparent 60%);
-            opacity: 0.65;
-        }
-
-        .metric-box.danger::after {
-            background: radial-gradient(circle at center, rgba(248,113,113,0.22), transparent 60%);
-        }
-
-        .sub-label {
-            font-size: 0.76rem;
-            color: #9ca3af;
-        }
-
-        .progress-shell {
-            height: 10px;
-            border-radius: 999px;
-            background: #e5e7eb;
-            overflow: hidden;
-        }
-
-        .progress-inner {
-            height: 10px;
-            border-radius: 999px;
-            background: linear-gradient(90deg, var(--secondary), var(--primary));
-            transition: width 0.9s cubic-bezier(.22,.61,.36,1);
-        }
-
-        .tip-box {
-            border-radius: 16px;
-            padding: 12px 14px;
-            border: 1px dashed rgba(34,197,94,0.7);
-            background: #ecfdf5;
-            font-size: 0.86rem;
-            color: #166534;
-        }
-
-        .tip-box.second {
-            border-color: rgba(37,99,235,0.7);
-            background: #eff6ff;
-            color: #1d4ed8;
-        }
-
-        .btn-main {
-            border-radius: 999px;
-            padding: 9px 20px;
-            border: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: #f9fafb;
-            box-shadow: 0 14px 30px rgba(34,197,94,0.32);
-            transition: transform .15s ease, box-shadow .15s ease;
-        }
-
-        .btn-main:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 18px 38px rgba(34,197,94,0.45);
-        }
-
-        .btn-ghost {
-            border-radius: 999px;
-            padding: 9px 16px;
-            font-size: 0.86rem;
-        }
-
-        .fade-up {
-            opacity: 0;
-            transform: translateY(16px);
-            animation: fadeUp .7s ease forwards;
-        }
-        .fade-up.d1 { animation-delay: .12s; }
-        .fade-up.d2 { animation-delay: .24s; }
-        .fade-up.d3 { animation-delay: .34s; }
-
-        @keyframes fadeUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+.btn-main:hover{
+    opacity:0.9;
+}
+</style>
 </head>
 <body>
 
-<div class="page-wrap">
-    <div class="card-main fade-up">
-        <div class="header-top d-flex flex-wrap justify-content-between align-items-center gap-2">
-            <div>
-                <div class="chip mb-1">
-                    <span>نتائج التحليل الذكي لغسل اليدين</span>
-                    <span class="small">AI Water Saver</span>
-                </div>
-                <h5 class="mb-0 mt-1">هذا ما يفعله صنبور واحد في غسلة واحدة فقط 💧</h5>
-            </div>
-            <div class="text-end">
-                <div style="font-size:0.8rem;">
-                    إمكانية الترشيد:
-                    <strong>{{ result.save_ratio }}٪</strong>
-                </div>
-                <div style="font-size:0.76rem; opacity:.9;">
-                    كلما قلّ الهدر، ارتفعت هذه النسبة ✅
-                </div>
+<div class="wrapper">
+<div class="card-main">
+
+    <div class="text-center mb-4">
+        <h2 class="title">نتائج تحليل استهلاك الماء</h2>
+        <p class="text-muted">تم تحليل الفيديو باستخدام رؤية حاسوبية (Computer Vision)</p>
+    </div>
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4">
+            <div class="metric">
+                <h3>{{ result.total_time }} ثانية</h3>
+                <span>المدة الكلية لفتح الماء</span>
             </div>
         </div>
 
-        <div class="metrics-wrap">
-            <div class="row g-3 mb-3">
-                <div class="col-md-4 fade-up d1">
-                    <div class="metric-box">
-                        <div class="metric-label mb-1">مدة فتح الماء الكلية</div>
-                        <div class="metric-value">
-                            <span class="metric-unit">ثانية</span>
-                            {{ result.total_time }}
-                        </div>
-                        <div class="sub-label mt-1">
-                            من أول ما فتح الصنبور وحتى إغلاقه.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4 fade-up d2">
-                    <div class="metric-box">
-                        <div class="metric-label mb-1">مدة الاستخدام الفعلي</div>
-                        <div class="metric-value" style="color:#0f766e;">
-                            <span class="metric-unit">ثانية</span>
-                            {{ result.use_time }}
-                        </div>
-                        <div class="sub-label mt-1">
-                            الوقت الذي تكون فيه اليدين فعليًا تحت الماء.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4 fade-up d3">
-                    <div class="metric-box danger">
-                        <div class="metric-label mb-1">مدة الهدر</div>
-                        <div class="metric-value" style="color:#b91c1c;">
-                            <span class="metric-unit">ثانية</span>
-                            {{ result.waste_time }}
-                        </div>
-                        <div class="sub-label mt-1">
-                            ماء يتدفق بلا استخدام حقيقي.
-                        </div>
-                    </div>
-                </div>
+        <div class="col-md-4">
+            <div class="metric">
+                <h3 style="color:#16a34a">{{ result.use_time }} ثانية</h3>
+                <span>مدة الاستخدام الفعلي</span>
             </div>
+        </div>
 
-            <div class="row g-3 mb-3">
-                <div class="col-lg-6 fade-up d1">
-                    <div class="metric-box" style="min-height:160px;">
-                        <div class="metric-label mb-1">كمية الماء المستخدمة في هذه الغسلة</div>
-                        <div class="metric-value">
-                            <span class="metric-unit">لتر</span>
-                            {{ result.water_used_liters }}
-                        </div>
-                        <div class="sub-label mt-2 mb-1">
-                            من هذه الكمية، يُعتبر الجزء التالي هدرًا يمكن الاستغناء عنه:
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <strong style="color:#b91c1c;">
-                                {{ result.water_wasted_liters }} لتر
-                            </strong>
-                            <div class="flex-grow-1 progress-shell">
-                                <div class="progress-inner" style="width: {{ result.save_ratio }}%;"></div>
-                            </div>
-                        </div>
-                        <div class="sub-label mt-1">
-                            لو كررت نفس السلوك 10 مرات في اليوم، يصبح الهدر:
-                            <strong>{{ (result.water_wasted_liters * 10)|round(2) }} لتر يوميًا تقريبًا.</strong>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-6 d-flex flex-column gap-2 fade-up d2">
-                    <div class="tip-box">
-                        <strong>نصيحة مباشرة من النظام:</strong>
-                        إغلاق الصنبور تمامًا أثناء فرك الصابون ثم فتحه فقط عند الشطف
-                        قد يقلل الهدر ({{ result.waste_time }} ثانية) بشكل كبير في كل غسلة.
-                    </div>
-
-                    <div class="tip-box second">
-                        <strong>فكرة لتطوير مشروعك:</strong>
-                        يمكنك مقارنة هذه النتائج مع فيديوهات أخرى لنفس الشخص أو لعدد من المستخدمين
-                        وعرض لوحة إحصائية توضح تحسن سلوك الترشيد مع الوقت (قبل وبعد التوعية).
-                    </div>
-                </div>
+        <div class="col-md-4">
+            <div class="metric">
+                <h3 style="color:#dc2626">{{ result.waste_time }} ثانية</h3>
+                <span>مدة الهدر</span>
             </div>
+        </div>
 
-            <div class="d-flex flex-wrap justify-content-between align-items-center mt-2">
-                <div class="d-flex gap-2 mb-2">
-                    <a href="/" class="btn btn-main">
-                        تحليل فيديو جديد
-                    </a>
-                    <button type="button" class="btn btn-outline-secondary btn-ghost" onclick="history.back()">
-                        رجوع
-                    </button>
-                </div>
-                <div style="font-size:0.78rem; color:#6b7280;">
-                    الأرقام تقريبية وتعتمد على افتراض معدل تدفق ثابت للصنبور (حوالي 0.1 لتر لكل ثانية).
-                </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-6">
+            <div class="metric">
+                <h3>{{ result.water_used_liters }} لتر</h3>
+                <span>إجمالي الماء المستخدم</span>
             </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="metric">
+                <h3 style="color:#dc2626">{{ result.water_wasted_liters }} لتر</h3>
+                <span>كمية الماء المهدور</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="mb-3">
+        <div class="d-flex justify-content-between mb-1">
+            <small>نسبة الهدر</small>
+            <small>{{ result.save_ratio }}%</small>
+        </div>
+        <div class="progress">
+            <div class="progress-bar bg-danger" style="width: {{ result.save_ratio }}%"></div>
         </div>
     </div>
+
+    <div class="text-center mt-4">
+        <a href="/" class="btn btn-main">تحليل فيديو جديد</a>
+    </div>
+
+</div>
 </div>
 
 </body>
