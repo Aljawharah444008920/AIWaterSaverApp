@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<title>AI Water Saver</title>
+<title>منصة تحليل استهلاك الماء</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
 
@@ -53,6 +53,32 @@ body{
     background:linear-gradient(135deg,#0ea5e9,#22c55e);
     color:white;
 }
+
+/* Loading Overlay */
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255,255,255,0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 9999;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid #e5e7eb;
+    border-top: 6px solid #0ea5e9;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
 </style>
 </head>
 <body>
@@ -68,15 +94,15 @@ body{
     </div>
     {% endif %}
 
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" onsubmit="return showLoading()">
         
         <div id="drop-area" class="upload-box mb-3">
-            <p id="file-label">⬆️ اسحب الفيديو هنا أو اضغط للاختيار</p>
+            <p id="file-label">⬆️ اسحبي الفيديو هنا أو اضغطي للاختيار</p>
             <input type="file" id="fileInput" name="file" accept="video/*" required hidden>
         </div>
 
         <div class="text-center">
-            <button type="submit" class="btn btn-main">
+            <button type="submit" id="submitBtn" class="btn btn-main">
                 تحليل الفيديو
             </button>
         </div>
@@ -86,24 +112,32 @@ body{
 </div>
 </div>
 
+<!-- Loading Screen -->
+<div class="loading-overlay" id="loading">
+    <div class="spinner"></div>
+    <h5>جاري تحليل الفيديو بالذكاء الاصطناعي...</h5>
+    <p>قد تستغرق العملية عدة ثواني</p>
+</div>
+
 <script>
 const dropArea = document.getElementById("drop-area");
 const fileInput = document.getElementById("fileInput");
 const fileLabel = document.getElementById("file-label");
+const submitBtn = document.getElementById("submitBtn");
 
-// فتح اختيار الملفات عند الضغط
+// فتح اختيار الملفات
 dropArea.addEventListener("click", () => {
     fileInput.click();
 });
 
-// عرض اسم الملف عند اختياره
+// عرض اسم الملف
 fileInput.addEventListener("change", () => {
     if (fileInput.files.length > 0) {
         fileLabel.textContent = "تم اختيار: " + fileInput.files[0].name;
     }
 });
 
-// دعم السحب والإفلات
+// Drag & Drop
 dropArea.addEventListener("dragover", (e) => {
     e.preventDefault();
     dropArea.classList.add("dragover");
@@ -119,6 +153,19 @@ dropArea.addEventListener("drop", (e) => {
     fileInput.files = e.dataTransfer.files;
     fileLabel.textContent = "تم اختيار: " + e.dataTransfer.files[0].name;
 });
+
+// إظهار شاشة التحليل
+function showLoading() {
+    if (fileInput.files.length === 0) {
+        alert("يرجى اختيار فيديو أولاً");
+        return false;
+    }
+
+    document.getElementById("loading").style.display = "flex";
+    submitBtn.disabled = true;
+    submitBtn.innerText = "جاري التحليل...";
+    return true;
+}
 </script>
 
 </body>
