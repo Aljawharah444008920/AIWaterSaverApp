@@ -31,16 +31,6 @@ body{
     padding:40px;
 }
 
-.title{
-    font-weight:800;
-    font-size:26px;
-}
-
-.subtitle{
-    color:#64748b;
-    font-size:14px;
-}
-
 .upload-box{
     border:2px dashed #94a3b8;
     border-radius:16px;
@@ -50,9 +40,9 @@ body{
     transition:0.3s;
 }
 
-.upload-box:hover{
+.upload-box.dragover{
     border-color:#0ea5e9;
-    background:#f8fafc;
+    background:#f0f9ff;
 }
 
 .btn-main{
@@ -63,10 +53,6 @@ body{
     background:linear-gradient(135deg,#0ea5e9,#22c55e);
     color:white;
 }
-
-.btn-main:hover{
-    opacity:0.9;
-}
 </style>
 </head>
 <body>
@@ -74,12 +60,7 @@ body{
 <div class="wrapper">
 <div class="card-main">
 
-    <div class="mb-4 text-center">
-        <h2 class="title">منصة ذكية لتحليل استهلاك الماء في غسل اليدين</h2>
-        <p class="subtitle">
-            ارفع فيديو قصير وسيتم تحليل زمن الاستخدام ومدة الهدر وكمية المياه المستهلكة.
-        </p>
-    </div>
+    <h3 class="text-center mb-4">منصة تحليل استهلاك الماء</h3>
 
     {% if error %}
     <div class="alert alert-danger text-center">
@@ -88,21 +69,57 @@ body{
     {% endif %}
 
     <form method="post" enctype="multipart/form-data">
-        <label class="upload-box mb-4 w-100">
-            <div class="mb-2">⬆️ اسحب وأسقطي الفيديو هنا أو اضغط للاختيار</div>
-            <small class="text-muted">mp4 / mov / avi / mkv</small>
-            <input type="file" name="file" accept="video/*" required hidden>
-        </label>
+        
+        <div id="drop-area" class="upload-box mb-3">
+            <p id="file-label">⬆️ اسحب الفيديو هنا أو اضغط للاختيار</p>
+            <input type="file" id="fileInput" name="file" accept="video/*" required hidden>
+        </div>
 
         <div class="text-center">
             <button type="submit" class="btn btn-main">
-                تحليل استهلاك الماء
+                تحليل الفيديو
             </button>
         </div>
+
     </form>
 
 </div>
 </div>
+
+<script>
+const dropArea = document.getElementById("drop-area");
+const fileInput = document.getElementById("fileInput");
+const fileLabel = document.getElementById("file-label");
+
+// فتح اختيار الملفات عند الضغط
+dropArea.addEventListener("click", () => {
+    fileInput.click();
+});
+
+// عرض اسم الملف عند اختياره
+fileInput.addEventListener("change", () => {
+    if (fileInput.files.length > 0) {
+        fileLabel.textContent = "تم اختيار: " + fileInput.files[0].name;
+    }
+});
+
+// دعم السحب والإفلات
+dropArea.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropArea.classList.add("dragover");
+});
+
+dropArea.addEventListener("dragleave", () => {
+    dropArea.classList.remove("dragover");
+});
+
+dropArea.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropArea.classList.remove("dragover");
+    fileInput.files = e.dataTransfer.files;
+    fileLabel.textContent = "تم اختيار: " + e.dataTransfer.files[0].name;
+});
+</script>
 
 </body>
 </html>
