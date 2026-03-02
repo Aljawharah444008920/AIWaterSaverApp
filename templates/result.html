@@ -11,7 +11,7 @@ body{
     min-height:100vh;
     margin:0;
     font-family: system-ui;
-    background: linear-gradient(135deg,#e0f2fe,#bbf7d0);
+    background: linear-gradient(135deg,#dbeafe,#bbf7d0);
 }
 
 .wrapper{
@@ -24,52 +24,17 @@ body{
 
 .card-main{
     width:100%;
-    max-width:1000px;
+    max-width:900px;
     background:white;
     border-radius:20px;
     box-shadow:0 25px 60px rgba(0,0,0,0.08);
     padding:40px;
 }
 
-.title{
-    font-weight:800;
-    font-size:26px;
-}
-
-.metric{
-    background:#f8fafc;
-    border-radius:16px;
-    padding:20px;
-    text-align:center;
-    box-shadow:0 10px 25px rgba(0,0,0,0.05);
-}
-
-.metric h3{
-    font-weight:800;
-    margin:0;
-}
-
-.metric span{
-    color:#64748b;
-    font-size:13px;
-}
-
-.progress{
-    height:12px;
-    border-radius:999px;
-}
-
-.btn-main{
-    border-radius:999px;
-    padding:10px 25px;
-    border:none;
-    font-weight:600;
-    background:linear-gradient(135deg,#0ea5e9,#22c55e);
-    color:white;
-}
-
-.btn-main:hover{
-    opacity:0.9;
+.score-circle{
+    font-size:40px;
+    font-weight:bold;
+    color:#0ea5e9;
 }
 </style>
 </head>
@@ -78,67 +43,61 @@ body{
 <div class="wrapper">
 <div class="card-main">
 
-    <div class="text-center mb-4">
-        <h2 class="title">نتائج تحليل استهلاك الماء</h2>
-        <p class="text-muted">تم تحليل الفيديو باستخدام رؤية حاسوبية (Computer Vision)</p>
+<h3 class="text-center mb-4">نتائج التحليل</h3>
+
+<div class="row text-center mb-4">
+    <div class="col-md-4">
+        <h6>المدة الكلية</h6>
+        <p>{{ result.total_time }} ثانية</p>
     </div>
-
-    <div class="row g-3 mb-4">
-
-        <div class="col-md-4">
-            <div class="metric">
-                <h3>{{ result.total_time }} ثانية</h3>
-                <span>المدة الكلية لفتح الماء</span>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="metric">
-                <h3 style="color:#16a34a">{{ result.use_time }} ثانية</h3>
-                <span>مدة الاستخدام الفعلي</span>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="metric">
-                <h3 style="color:#dc2626">{{ result.waste_time }} ثانية</h3>
-                <span>مدة الهدر</span>
-            </div>
-        </div>
-
+    <div class="col-md-4">
+        <h6>وقت الاستخدام</h6>
+        <p>{{ result.use_time }} ثانية</p>
     </div>
-
-    <div class="row g-3 mb-4">
-
-        <div class="col-md-6">
-            <div class="metric">
-                <h3>{{ result.water_used_liters }} لتر</h3>
-                <span>إجمالي الماء المستخدم</span>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="metric">
-                <h3 style="color:#dc2626">{{ result.water_wasted_liters }} لتر</h3>
-                <span>كمية الماء المهدور</span>
-            </div>
-        </div>
-
+    <div class="col-md-4">
+        <h6>وقت الهدر</h6>
+        <p>{{ result.waste_time }} ثانية</p>
     </div>
+</div>
 
-    <div class="mb-3">
-        <div class="d-flex justify-content-between mb-1">
-            <small>نسبة الهدر</small>
-            <small>{{ result.save_ratio }}%</small>
-        </div>
-        <div class="progress">
-            <div class="progress-bar bg-danger" style="width: {{ result.save_ratio }}%"></div>
+<hr>
+
+<div class="row text-center mb-4">
+    <div class="col-md-6">
+        <h6>المياه المستخدمة</h6>
+        <p>{{ result.water_used_liters }} لتر</p>
+    </div>
+    <div class="col-md-6">
+        <h6>المياه المهدورة</h6>
+        <p>{{ result.water_wasted_liters }} لتر</p>
+    </div>
+</div>
+
+<hr>
+
+<div class="text-center mb-4">
+    <h5>نسبة الهدر</h5>
+    <div class="progress" style="height:25px;">
+        <div class="progress-bar bg-danger"
+             role="progressbar"
+             style="width: {{ result.save_ratio }}%;">
+             {{ result.save_ratio }}%
         </div>
     </div>
+</div>
 
-    <div class="text-center mt-4">
-        <a href="/" class="btn btn-main">تحليل فيديو جديد</a>
-    </div>
+<div class="text-center mb-4">
+    <h5>تقييم كفاءة الاستخدام</h5>
+    <div class="score-circle">{{ result.score }}/100</div>
+</div>
+
+<div class="alert alert-info text-center">
+    {{ result.advice }}
+</div>
+
+<div class="text-center mt-4">
+    <a href="/" class="btn btn-success">تحليل فيديو جديد</a>
+</div>
 
 </div>
 </div>
