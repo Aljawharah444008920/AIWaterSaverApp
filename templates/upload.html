@@ -11,7 +11,7 @@ body{
     min-height:100vh;
     margin:0;
     font-family: system-ui;
-    background: linear-gradient(135deg,#e0f2fe,#bbf7d0);
+    background: linear-gradient(135deg,#dbeafe,#bbf7d0);
 }
 
 .wrapper{
@@ -24,7 +24,7 @@ body{
 
 .card-main{
     width:100%;
-    max-width:900px;
+    max-width:850px;
     background:white;
     border-radius:20px;
     box-shadow:0 25px 60px rgba(0,0,0,0.08);
@@ -34,7 +34,7 @@ body{
 .upload-box{
     border:2px dashed #94a3b8;
     border-radius:16px;
-    padding:30px;
+    padding:35px;
     text-align:center;
     cursor:pointer;
     transition:0.3s;
@@ -47,14 +47,14 @@ body{
 
 .btn-main{
     border-radius:999px;
-    padding:10px 25px;
+    padding:12px 30px;
     border:none;
     font-weight:600;
     background:linear-gradient(135deg,#0ea5e9,#22c55e);
     color:white;
 }
 
-/* Loading Overlay */
+/* Loading */
 .loading-overlay {
     position: fixed;
     inset: 0;
@@ -86,37 +86,36 @@ body{
 <div class="wrapper">
 <div class="card-main">
 
-    <h3 class="text-center mb-4">منصة تحليل استهلاك الماء</h3>
+<h3 class="text-center mb-4">تحليل استهلاك الماء بالذكاء الاصطناعي</h3>
 
-    {% if error %}
-    <div class="alert alert-danger text-center">
-        {{ error }}
+{% if error %}
+<div class="alert alert-danger text-center">
+{{ error }}
+</div>
+{% endif %}
+
+<form method="post" enctype="multipart/form-data" onsubmit="return showLoading()">
+    
+    <div id="drop-area" class="upload-box mb-3">
+        <p id="file-label">⬆️ اسحبي الفيديو هنا أو اضغطي للاختيار</p>
+        <input type="file" id="fileInput" name="file" accept="video/*" required hidden>
     </div>
-    {% endif %}
 
-    <form method="post" enctype="multipart/form-data" onsubmit="return showLoading()">
-        
-        <div id="drop-area" class="upload-box mb-3">
-            <p id="file-label">⬆️ اسحبي الفيديو هنا أو اضغطي للاختيار</p>
-            <input type="file" id="fileInput" name="file" accept="video/*" required hidden>
-        </div>
+    <div class="text-center">
+        <button type="submit" id="submitBtn" class="btn btn-main">
+            تحليل الفيديو
+        </button>
+    </div>
 
-        <div class="text-center">
-            <button type="submit" id="submitBtn" class="btn btn-main">
-                تحليل الفيديو
-            </button>
-        </div>
-
-    </form>
+</form>
 
 </div>
 </div>
 
-<!-- Loading Screen -->
 <div class="loading-overlay" id="loading">
     <div class="spinner"></div>
-    <h5>جاري تحليل الفيديو بالذكاء الاصطناعي...</h5>
-    <p>قد تستغرق العملية عدة ثواني</p>
+    <h5>جاري تحليل الفيديو...</h5>
+    <p>يرجى الانتظار</p>
 </div>
 
 <script>
@@ -125,19 +124,14 @@ const fileInput = document.getElementById("fileInput");
 const fileLabel = document.getElementById("file-label");
 const submitBtn = document.getElementById("submitBtn");
 
-// فتح اختيار الملفات
-dropArea.addEventListener("click", () => {
-    fileInput.click();
-});
+dropArea.addEventListener("click", () => fileInput.click());
 
-// عرض اسم الملف
 fileInput.addEventListener("change", () => {
     if (fileInput.files.length > 0) {
         fileLabel.textContent = "تم اختيار: " + fileInput.files[0].name;
     }
 });
 
-// Drag & Drop
 dropArea.addEventListener("dragover", (e) => {
     e.preventDefault();
     dropArea.classList.add("dragover");
@@ -154,13 +148,11 @@ dropArea.addEventListener("drop", (e) => {
     fileLabel.textContent = "تم اختيار: " + e.dataTransfer.files[0].name;
 });
 
-// إظهار شاشة التحليل
 function showLoading() {
     if (fileInput.files.length === 0) {
         alert("يرجى اختيار فيديو أولاً");
         return false;
     }
-
     document.getElementById("loading").style.display = "flex";
     submitBtn.disabled = true;
     submitBtn.innerText = "جاري التحليل...";
